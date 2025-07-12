@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polymer Trading System - Test Automation Demo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            margin: 0;
+        }
+        
+        .demo-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .demo-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .demo-header h1 {
+            color: #4f46e5;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .demo-header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .feature-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            border-left: 4px solid #4f46e5;
+        }
+        
+        .feature-card h3 {
+            color: #4f46e5;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .feature-card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            padding: 8px 0;
+            color: #555;
+            position: relative;
+            padding-left: 25px;
+        }
+        
+        .feature-list li:before {
+            content: "✅";
+            position: absolute;
+            left: 0;
+            top: 8px;
+        }
+        
+        .demo-actions {
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            margin: 10px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.3);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #545b62;
+            transform: translateY(-2px);
+        }
+        
+        .test-info {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+        
+        .test-info h3 {
+            color: #1976d2;
+            margin-bottom: 15px;
+        }
+        
+        .test-info ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .test-info li {
+            margin-bottom: 8px;
+            color: #374151;
+        }
+        
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="demo-header">
+            <h1>🧪 Test Automation System</h1>
+            <p>Comprehensive automated testing for your Polymer Trading System</p>
+        </div>
+        
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h3>🚀 Auto-Run Tests</h3>
+                <p>Tests automatically run when you start the website for the first time or after a long period.</p>
+                <ul class="feature-list">
+                    <li>System configuration validation</li>
+                    <li>Google Sheets integration</li>
+                    <li>WhatsApp integration</li>
+                    <li>Data synchronization</li>
+                    <li>Performance metrics</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h3>🔧 Manual Testing</h3>
+                <p>Run comprehensive tests manually with a single click to verify system health.</p>
+                <ul class="feature-list">
+                    <li>Deal management testing</li>
+                    <li>Inventory management</li>
+                    <li>UI functionality</li>
+                    <li>Error handling</li>
+                    <li>End-to-end workflows</li>
+                </ul>
+            </div>
+            
+            <div class="feature-card">
+                <h3>📊 Detailed Reports</h3>
+                <p>Get comprehensive test reports with detailed results and export capabilities.</p>
+                <ul class="feature-list">
+                    <li>Test success/failure summary</li>
+                    <li>Detailed error messages</li>
+                    <li>Performance metrics</li>
+                    <li>Export to JSON</li>
+                    <li>Historical test data</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="test-info">
+            <h3>What Gets Tested:</h3>
+            <ul>
+                <li><strong>System Configuration:</strong> Validates all required settings and API configurations</li>
+                <li><strong>Google Sheets Integration:</strong> Tests authentication, data access, and synchronization</li>
+                <li><strong>WhatsApp Integration:</strong> Verifies message sending and template generation</li>
+                <li><strong>Deal Management:</strong> Tests deal creation, validation, and storage</li>
+                <li><strong>Inventory Management:</strong> Tests inventory operations and alerts</li>
+                <li><strong>Data Synchronization:</strong> Verifies local storage and cloud sync</li>
+                <li><strong>UI Functionality:</strong> Tests form validation and display updates</li>
+                <li><strong>Error Handling:</strong> Validates proper error management</li>
+                <li><strong>Performance:</strong> Measures initialization time and memory usage</li>
+                <li><strong>End-to-End Workflow:</strong> Tests complete deal lifecycle</li>
+            </ul>
+        </div>
+        
+        <div class="demo-actions">
+            <a href="index.html" class="btn btn-primary">🚀 Launch Trading System</a>
+            <a href="test/test_whatsapp.html" class="btn btn-secondary">📱 Test WhatsApp Integration</a>
+        </div>
+        
+        <div style="margin-top: 40px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+            <h3>How to Use:</h3>
+            <ol>
+                <li><strong>Auto-Testing:</strong> Enable auto-testing in the main system, and tests will run automatically on startup</li>
+                <li><strong>Manual Testing:</strong> Click the "🧪 Test System" button in the top-right corner of the main interface</li>
+                <li><strong>View Results:</strong> Test results are displayed in a detailed panel with progress indicators</li>
+                <li><strong>Export Reports:</strong> Export test reports as JSON files for analysis</li>
+            </ol>
+        </div>
+        
+        <div style="margin-top: 30px;">
+            <h3>Example Test Report:</h3>
+            <div class="code-block">
+{
+  "summary": {
+    "total": 10,
+    "passed": 9,
+    "failed": 1,
+    "duration": 4500,
+    "timestamp": "2024-01-15T10:30:00.000Z"
+  },
+  "results": [
+    {
+      "name": "System Configuration",
+      "passed": true,
+      "details": "All required configurations are set",
+      "timestamp": 1705312200000
+    },
+    {
+      "name": "Google Sheets Integration",
+      "passed": true,
+      "details": "Successfully authenticated and accessed sheets",
+      "timestamp": 1705312201000
+    }
+  ]
+}
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

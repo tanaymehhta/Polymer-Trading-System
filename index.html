@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polymer Trading Management System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔄 Polymer Trading System</h1>
+            <p>Complete Deal Registration & Inventory Management</p>
+        </div>
+
+        <div class="main-content">
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('deal-registration')">📝 Deal Registration</div>
+                <div class="tab" onclick="switchTab('deals-history')">📊 Deals History</div>
+                <div class="tab" onclick="switchTab('inventory-management')">📦 Inventory</div>
+                <div class="tab" onclick="switchTab('products-database')">🧪 Products Database</div>
+            </div>
+
+            <!-- Deal Registration Tab -->
+            <div id="deal-registration" class="tab-content active">
+                <h2>Register New Deal</h2>
+                <div class="form-header-actions">
+                    <button type="button" class="btn btn-secondary" onclick="restoreLastDeal()" id="back-button" style="display: none;">⬅️ Back to Last Deal</button>
+                </div>
+                <form id="dealForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="date">Date</label>
+                            <input type="date" id="date" name="date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="saleParty">Sale Party</label>
+                            <input type="text" id="saleParty" name="saleParty" autocomplete="off" oninput="handleSalePartyInput()" onfocus="showSalePartyDropdown()" placeholder="Type or select customer">
+                            <div id="saleParty-dropdown" class="autocomplete-dropdown" style="display:none;"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="quantitySold">Quantity Sold (kgs)</label>
+                            <input type="number" id="quantitySold" name="quantitySold" min="0" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label for="saleRate">Sale Rate</label>
+                            <input type="number" id="saleRate" name="saleRate" min="0" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label for="deliveryTerms">Delivery Terms</label>
+                            <select id="deliveryTerms" name="deliveryTerms">
+                                <option value="">Select Delivery Terms</option>
+                                <option value="delivered">Delivered</option>
+                                <option value="ex-warehouse">Ex-Warehouse</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="saleComments">Sale Comments</label>
+                            <textarea id="saleComments" name="saleComments" placeholder="Additional sale details..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="product">Product Code</label>
+                            <input type="text" id="product" name="product" autocomplete="off" required oninput="handleProductInput()" onfocus="showProductDropdown()" placeholder="Type or select product code">
+                            <div id="product-dropdown" class="autocomplete-dropdown" style="display:none;"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="grade">Grade (Auto-filled)</label>
+                            <input type="text" id="grade" name="grade" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="company">Company (Auto-filled)</label>
+                            <input type="text" id="company" name="company" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="specificGrade">Specific Grade (Auto-filled)</label>
+                            <input type="text" id="specificGrade" name="specificGrade" readonly>
+                        </div>
+                    </div>
+
+                    <div class="sale-source">
+                        <div class="radio-group" onclick="selectSaleSource('new')">
+                            <input type="radio" id="new-material" name="saleSource" value="new">
+                            <label for="new-material">New Material Purchase</label>
+                        </div>
+                        <div class="radio-group" onclick="selectSaleSource('inventory')">
+                            <input type="radio" id="inventory-material" name="saleSource" value="inventory">
+                            <label for="inventory-material">From Inventory</label>
+                        </div>
+                    </div>
+
+                    <div id="inventory-selection" class="inventory-selection">
+                        <h4>Select Inventory Item</h4>
+                        <div id="inventory-list" class="inventory-list"></div>
+                        <p style="margin-top: 10px; color: #666; font-size: 0.9em;">Click on an inventory item to select it</p>
+                    </div>
+
+                    <div id="purchase-details" class="form-grid">
+                        <div class="form-group">
+                            <label for="purchaseParty">Purchase Party</label>
+                            <input type="text" id="purchaseParty" name="purchaseParty" autocomplete="off" oninput="handlePurchasePartyInput()" onfocus="showPurchasePartyDropdown()" placeholder="Type or select supplier">
+                            <div id="purchaseParty-dropdown" class="autocomplete-dropdown" style="display:none;"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="purchaseQuantity">Purchase Quantity (kgs)</label>
+                            <input type="number" id="purchaseQuantity" name="purchaseQuantity" min="0" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label for="purchaseRate">Purchase Rate</label>
+                            <input type="number" id="purchaseRate" name="purchaseRate" min="0" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label for="purchaseComments">Purchase Comments</label>
+                            <textarea id="purchaseComments" name="purchaseComments" placeholder="Additional purchase details..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="finalComments">Final Comments</label>
+                            <textarea id="finalComments" name="finalComments" placeholder="Final comments for accounts..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="warehouseInput">Warehouse</label>
+                            <input type="text" id="warehouseInput" name="warehouseInput" placeholder="Warehouse location">
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button type="submit" class="btn btn-primary">💾 Register Deal</button>
+                    </div>
+                    <div id="deal-tasks-checklist" style="margin-top: 16px;"></div>
+                </form>
+
+                <div id="whatsapp-preview-section" style="display: none;">
+                    <h3>WhatsApp Message Preview</h3>
+                    <div id="whatsapp-message-1" class="whatsapp-preview">
+                        <h4>Message to Accounts Team (919702507574)</h4>
+                        <pre id="whatsapp-content-1"></pre>
+                    </div>
+                    <div id="whatsapp-message-2" class="whatsapp-preview">
+                        <h4>Message to Logistics Team (917977656248)</h4>
+                        <pre id="whatsapp-content-2"></pre>
+                    </div>
+                    <button type="button" class="btn btn-secondary" onclick="sendWhatsAppMessages()">📤 Send WhatsApp Messages</button>
+                </div>
+            </div>
+
+            <!-- Deals History Tab -->
+            <div id="deals-history" class="tab-content">
+                <h2>Deals History</h2>
+                <div style="overflow-x: auto;">
+                    <table class="deals-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Sale Party</th>
+                                <th>Product</th>
+                                <th>Grade</th>
+                                <th>Company</th>
+                                <th>Qty Sold</th>
+                                <th>Sale Rate</th>
+                                <th>Purchase Party</th>
+                                <th>Purchase Rate</th>
+                                <th>Profit</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="deals-table-body">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Inventory Tab -->
+            <div id="inventory-management" class="tab-content">
+                <h2>Current Inventory</h2>
+                <div class="action-buttons">
+                    <button type="button" class="btn btn-secondary" onclick="showAddInventoryForm()">➕ Add Inventory</button>
+                    <button type="button" class="btn btn-secondary" id="toggle-inventory-table" onclick="toggleInventoryTable()">📋 View as Table</button>
+                </div>
+                <div id="inventory-table-container" style="display:none; margin-top: 24px; overflow-x:auto;">
+                    <table class="deals-table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Grade</th>
+                                <th>Company</th>
+                                <th>Specific Grade</th>
+                                <th>Quantity</th>
+                                <th>Rate</th>
+                                <th>Total Value</th>
+                                <th>Supplier</th>
+                                <th>Date Added</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventory-table-body">
+                        </tbody>
+                    </table>
+                </div>
+                <div id="inventory-grid" class="inventory-grid"></div>
+            </div>
+
+            <!-- Products Database Tab -->
+            <div id="products-database" class="tab-content">
+                <h2>Products Database</h2>
+                <div class="action-buttons">
+                    <button type="button" class="btn btn-secondary" onclick="sessionDB.refresh()">🔄 Refresh from Google Sheets</button>
+                    <button type="button" class="btn btn-secondary" onclick="showSystemStats()">📊 System Stats</button>
+                    <button type="button" class="btn btn-secondary" onclick="showAddProductForm()">➕ Add Product</button>
+                    <button type="button" class="btn btn-secondary" id="toggle-products-table" onclick="toggleProductsTable()">📋 View as Table</button>
+                </div>
+                <div id="products-table-container" style="display:none; margin-top: 24px; overflow-x:auto;">
+                    <table class="deals-table">
+                        <thead>
+                            <tr>
+                                <th>Product Code</th>
+                                <th>Grade</th>
+                                <th>Company</th>
+                                <th>Specific Grade</th>
+                                <th>Last Updated</th>
+                            </tr>
+                        </thead>
+                        <tbody id="products-table-body">
+                        </tbody>
+                    </table>
+                </div>
+                <div id="products-grid" class="inventory-grid"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="secrets.config.js"></script>
+    <script src="config.js"></script>
+    <script src="sessionDB.js"></script>
+    <script src="ui.js"></script>
+    <script src="deals.js"></script>
+    <script src="whatsapp.js"></script>
+    <script src="test-automation.js"></script>
+    <script src="app.js"></script>
+    <!-- Modal for new product creation -->
+    <div id="new-product-modal" class="modal" style="display:none;">
+      <div class="modal-content">
+        <span class="close" onclick="closeNewProductModal()">&times;</span>
+        <h3>Add New Product</h3>
+        <form id="new-product-form" onsubmit="saveNewProduct(event)">
+          <label for="new-product-code">Product Code</label>
+          <input type="text" id="new-product-code" name="new-product-code" required>
+          <label for="new-grade">Grade</label>
+          <input type="text" id="new-grade" name="new-grade" required>
+          <label for="new-company">Company</label>
+          <input type="text" id="new-company" name="new-company" required>
+          <label for="new-specific-grade">Specific Grade</label>
+          <input type="text" id="new-specific-grade" name="new-specific-grade">
+          <div style="margin-top:16px;">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="button" class="btn btn-secondary" onclick="closeNewProductModal()">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- Modal for new sale party creation -->
+    <div id="new-saleParty-modal" class="modal" style="display:none;">
+      <div class="modal-content">
+        <span class="close" onclick="closeNewSalePartyModal()">&times;</span>
+        <h3>Add New Sale Party</h3>
+        <form id="new-saleParty-form" onsubmit="saveNewSaleParty(event)">
+          <label for="new-saleParty-name">Name</label>
+          <input type="text" id="new-saleParty-name" name="new-saleParty-name" required>
+          <label for="new-saleParty-contact">Contact Person</label>
+          <input type="text" id="new-saleParty-contact" name="new-saleParty-contact">
+          <label for="new-saleParty-phone">Phone</label>
+          <input type="text" id="new-saleParty-phone" name="new-saleParty-phone">
+          <label for="new-saleParty-email">Email</label>
+          <input type="email" id="new-saleParty-email" name="new-saleParty-email">
+          <label for="new-saleParty-address">Address</label>
+          <input type="text" id="new-saleParty-address" name="new-saleParty-address">
+          <div style="margin-top:16px;">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="button" class="btn btn-secondary" onclick="closeNewSalePartyModal()">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- Modal for new purchase party creation -->
+    <div id="new-purchaseParty-modal" class="modal" style="display:none;">
+      <div class="modal-content">
+        <span class="close" onclick="closeNewPurchasePartyModal()">&times;</span>
+        <h3>Add New Purchase Party</h3>
+        <form id="new-purchaseParty-form" onsubmit="saveNewPurchaseParty(event)">
+          <label for="new-purchaseParty-name">Name</label>
+          <input type="text" id="new-purchaseParty-name" name="new-purchaseParty-name" required>
+          <label for="new-purchaseParty-contact">Contact Person</label>
+          <input type="text" id="new-purchaseParty-contact" name="new-purchaseParty-contact">
+          <label for="new-purchaseParty-phone">Phone</label>
+          <input type="text" id="new-purchaseParty-phone" name="new-purchaseParty-phone">
+          <label for="new-purchaseParty-email">Email</label>
+          <input type="email" id="new-purchaseParty-email" name="new-purchaseParty-email">
+          <label for="new-purchaseParty-address">Address</label>
+          <input type="text" id="new-purchaseParty-address" name="new-purchaseParty-address">
+          <div style="margin-top:16px;">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="button" class="btn btn-secondary" onclick="closeNewPurchasePartyModal()">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    
+    <!-- Test Automation Panel -->
+    <div id="test-automation-panel" class="test-panel" style="display: none;">
+        <div class="test-header">
+            <h2>🧪 System Testing</h2>
+            <div class="test-controls">
+                <button id="run-tests-btn" class="btn btn-primary" onclick="runManualTests()">
+                    🚀 Run Tests
+                </button>
+                <button id="toggle-auto-test" class="btn btn-success" onclick="toggleAutoTesting()">
+                    Enable Auto-Testing
+                </button>
+                <button id="export-report-btn" class="btn btn-secondary" onclick="exportTestReport()">
+                    📊 Export Report
+                </button>
+                <button id="close-test-panel" class="btn btn-outline" onclick="toggleTestPanel()">
+                    ✕ Close
+                </button>
+            </div>
+        </div>
+        
+        <div class="test-status-container">
+            <div class="test-progress-bar">
+                <div id="test-progress" class="test-progress-fill"></div>
+            </div>
+            <div id="test-status" class="test-status">Ready to test</div>
+        </div>
+        
+        <div id="test-results" class="test-results" style="display: none;">
+            <!-- Test results will be populated here -->
+        </div>
+        
+        <div class="test-info">
+            <h3>What gets tested:</h3>
+            <ul>
+                <li>✅ System Configuration & Validation</li>
+                <li>✅ Google Sheets Integration</li>
+                <li>✅ WhatsApp Integration</li>
+                <li>✅ Deal Management</li>
+                <li>✅ Inventory Management</li>
+                <li>✅ Data Synchronization</li>
+                <li>✅ UI Functionality</li>
+                <li>✅ Error Handling</li>
+                <li>✅ Performance Metrics</li>
+                <li>✅ End-to-End Workflow</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
